@@ -7,7 +7,11 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Myanmar3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Leaflet CSS for map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="icon" href="/static/favicon.ico">
@@ -27,9 +31,15 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light-gray);
+            font-family: 'Inter', 'Myanmar3', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* Myanmar text fallback */
+        .myanmar-text {
+            font-family: 'Myanmar3', 'Pyidaungsu', 'Myanmar Text', sans-serif;
         }
 
         .header-bg {
@@ -313,84 +323,100 @@
         margin: 0;
         }
 
-        /* NEW: Slideshow background styles */
-        .slideshow-background {
+        /* Modern login background with animated particles */
+        .login-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            z-index: 0; /* Ensure it's behind the login form */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
         }
 
-        .slideshow-background img {
+        .login-background::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0; /* Start hidden */
-            animation: imageFade 30s infinite; /* Adjusted duration for 6 images (5s per image) */
+            background: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: particleFloat 20s ease-in-out infinite;
         }
 
-        /* Animation delays for each image */
-        .slideshow-background img:nth-child(1) { animation-delay: 0s; }
-        .slideshow-background img:nth-child(2) { animation-delay: 5s; }
-        .slideshow-background img:nth-child(3) { animation-delay: 10s; }
-        .slideshow-background img:nth-child(4) { animation-delay: 15s; }
-        .slideshow-background img:nth-child(5) { animation-delay: 20s; }
-        .slideshow-background img:nth-child(6) { animation-delay: 25s; }
-
-        @keyframes imageFade {
-            0% { opacity: 0; transform: scale(1.05); }
-            10% { opacity: 1; transform: scale(1); }
-            20% { opacity: 1; transform: scale(1); }
-            30% { opacity: 0; transform: scale(1.05); }
-            100% { opacity: 0; }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* Overlay for readability */
-        .login-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); /* Dark semi-transparent overlay */
-            z-index: 1; /* Above slideshow, below form */
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(30px) rotate(240deg); }
         }
 
-        /* Adjust login form positioning and background */
+        /* Modern login container styling */
         #authContainer {
-            position: relative; /* Needed for z-index context */
-            z-index: 2; /* Ensure form is above overlay */
-            background-color: transparent; /* Make background transparent to show slideshow */
-            flex-direction: column; /* Stack logo, nav, and form vertically */
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Center content horizontally */
-            padding-top: 0; /* Reset padding from previous version */
-        }
-
-        #authContainer > div.login-card {
-            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for the form card */
-            position: relative; /* Ensure form content is on top of its own semi-transparent background */
-            z-index: 3;
-            max-width: 480px; /* Slightly wider for better layout */
-            width: 90%; /* Responsive width */
-            padding: 2.5rem; /* More padding */
-        }
-
-        /* Navigation styles for login page */
-        .login-nav {
-            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
-            width: 100%;
-            padding: 0.75rem 0;
-            margin-bottom: 2rem; /* Space between nav and login card */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: relative;
-            z-index: 4; /* Above login card for dropdowns */
+            z-index: 2;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 450px;
+            width: 100%;
+            padding: 3rem;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            border-radius: 24px 24px 0 0;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modern navigation for login page */
+        .login-nav {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 4;
+            max-width: 800px;
+            width: 100%;
         }
 
         .login-nav ul {
@@ -411,18 +437,20 @@
             color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 0.75rem;
-            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
-            border-radius: 0.375rem;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .login-nav a:hover, .login-nav .nav-dropdown-toggle:hover {
             color: var(--accent-color);
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px); /* Subtle lift effect */
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .login-nav .nav-dropdown-toggle i {
@@ -438,22 +466,25 @@
             position: absolute;
             top: 100%;
             left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            min-width: 180px;
-            border-radius: 0.375rem;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            min-width: 200px;
+            border-radius: 12px;
             overflow: hidden;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 0.5rem 0;
-            z-index: 10; /* Ensure dropdown is on top */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+            padding: 0.5rem;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .login-nav li.active .dropdown-menu {
             opacity: 1;
             visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
 
         .login-nav .dropdown-menu a {
@@ -462,12 +493,16 @@
             display: block;
             white-space: nowrap;
             text-align: left;
+            border-radius: 8px;
+            margin: 2px 0;
+            font-size: 0.85rem;
         }
 
         .login-nav .dropdown-menu a:hover {
-            background-color: var(--secondary-color);
-            color: white; /* Keep white on hover for dropdown items */
-            transform: none; /* No lift for dropdown items */
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            transform: translateX(4px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .login-nav .disabled-link {
@@ -476,33 +511,55 @@
             pointer-events: none;
         }
 
-        /* Company Info on Login Page */
-        .company-info {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 1.5rem 2.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+        /* Modern company branding */
+        .company-branding {
+            text-align: center;
+            margin-bottom: 3rem;
+            z-index: 3;
+            position: relative;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            max-width: 480px; /* Match login card width */
-            width: 90%;
-            position: relative;
-            z-index: 3;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
         }
 
-        .company-info img {
-            max-height: 60px;
-            width: auto;
-            border-radius: 0.25rem;
+        .company-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .company-info h1 {
-            color: var(--primary-color);
-            font-size: 1.75rem; /* Larger headline */
-            font-weight: bold;
-            line-height: 1.2;
+        .company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .company-title {
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.025em;
+        }
+
+        .company-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -560,23 +617,17 @@
     </div>
 
     <!-- Login/Registration Container (Initially visible if not logged in) -->
-    <div id="authContainer" class="min-h-screen flex items-center justify-center p-4">
-        <!-- Slideshow Background -->
-        <div class="slideshow-background">
-            <img src="https://placehold.co/1920x1080/004c97/ffffff?text=Telecom+Tower" alt="Telecom Tower">
-            <img src="https://placehold.co/1920x1080/0066cc/ffffff?text=Fiber+Optic+Cables" alt="Fiber Optic Cables">
-            <img src="https://placehold.co/1920x1080/ffcc00/333333?text=Network+Servers" alt="Network Servers">
-            <img src="https://placehold.co/1920x1080/27ae60/ffffff?text=Data+Center" alt="Data Center">
-            <img src="https://placehold.co/1920x1080/34495e/ffffff?text=Technician+Working" alt="Technician Working">
-            <img src="https://placehold.co/1920x1080/004c97/ffffff?text=Satellite+Dish" alt="Satellite Dish">
-        </div>
-        <!-- Overlay for readability -->
-        <div class="login-overlay"></div>
+    <div id="authContainer" class="min-h-screen flex flex-col items-center justify-center p-4">
+        <!-- Modern animated background -->
+        <div class="login-background"></div>
 
-        <!-- Company Info Section -->
-        <div class="company-info">
-            <img src="https://scontent.fygn4-1.fna.fbcdn.net/v/t39.30808-6/300452667_401140038890737_7479860341770638062_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=YQ2Zf87w62cQ7kNw_gP3pY0&_nc_ht=scontent.fygn4-1.fna&oh=00_AYCgK1sP2k5y-4f2y_5f-3v6e5g3h-2d7c5b4a2e1f&oe=669E4B5E" alt="Company Logo" onerror="this.onerror=null;this.src='https://placehold.co/60x60/004c97/ffffff?text=Logo';">
-            <h1>MYANMAR PADAUK ENGINEERING & CONSTRUCTION CO.,LTD</h1>
+        <!-- Company Branding Section -->
+        <div class="company-branding">
+            <div class="company-logo">
+                <img src="https://cdn.builder.io/api/v1/image/assets%2F7be681e6de594e55a9cd54f5a2d36a54%2F83ff429dfb9945b39641d5fe9877d11d?format=webp&width=800" alt="MMP Logo" onerror="this.onerror=null;this.src='https://placehold.co/120x120/004c97/ffffff?text=MMP';">
+            </div>
+            <h1 class="company-title myanmar-text">MYANMAR PADAUK</h1>
+            <p class="company-subtitle">Engineering & Construction Co.,Ltd</p>
         </div>
 
         <!-- Navigation Tab (above login ui box) -->
@@ -624,29 +675,41 @@
             </ul>
         </nav>
 
-        <div class="login-card bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h2 id="authTitle" class="text-2xl font-bold text-center mb-6 text-gray-800">Login</h2>
+        <div class="login-card">
+            <div class="text-center mb-8">
+                <h2 id="authTitle" class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+                <p class="text-gray-600">Sign in to access the Fiber Fault Reporting System</p>
+            </div>
 
-            <div id="messageBoxAuth" class="hidden p-3 mb-4 rounded-md text-sm" role="alert"></div>
+            <div id="messageBoxAuth" class="hidden p-4 mb-6 rounded-xl text-sm font-medium border-l-4" role="alert"></div>
 
-            <form id="authForm" class="space-y-4">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" id="username" name="username" required
-                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="password" name="password" required
-                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <form id="authForm" class="space-y-6">
+                <div class="space-y-4">
+                    <div class="relative">
+                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-gray-400"></i>Username
+                        </label>
+                        <input type="text" id="username" name="username" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white">
+                    </div>
+                    <div class="relative">
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-400"></i>Password
+                        </label>
+                        <input type="password" id="password" name="password" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white">
+                    </div>
                 </div>
                 <button type="submit" id="authSubmitBtn"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Login
+                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                 </button>
-                <p class="text-center text-sm mt-4">
-                    Don't have an account? <a href="#" id="toggleAuthMode" class="text-indigo-600 hover:text-indigo-800">Register here</a>
-                </p>
+                <div class="text-center">
+                    <p class="text-sm text-gray-600">
+                        Don't have an account?
+                        <a href="#" id="toggleAuthMode" class="font-semibold text-blue-600 hover:text-blue-800 transition-colors">Register here</a>
+                    </p>
+                </div>
             </form>
         </div>
     </div>
@@ -656,7 +719,7 @@
         <!-- Header -->
         <header class="header-bg text-white p-4 shadow-md sticky-header">
             <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-2xl font-bold">MMP ဖိုက်ဘာ ချို့ယွင်းချက်အစီရင်ခံစနစ်</h1>
+                <h1 class="text-2xl font-bold myanmar-text">MMP ဖိုက်ဘာ ချို့ယွင်းချက်အစီရင်ခံစနစ်</h1>
                 <nav>
                     <div class="flex items-center space-x-4">
                         <span id="loggedInUser" class="text-sm"></span>
@@ -669,16 +732,16 @@
         <!-- Tab Navigation -->
         <div class="flex border-b border-border-color sticky-tabs">
             <div class="container mx-auto flex">
-                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200 active" data-tab="faultReports">
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200 active myanmar-text" data-tab="faultReports">
                     <i class="fas fa-exclamation-triangle mr-2"></i>ချို့ယွင်းချက်အစီရင်ခံစာများ
                 </button>
-                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="materialInventory">
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200 myanmar-text" data-tab="materialInventory">
                     <i class="fas fa-warehouse mr-2"></i>ပစ္စည်းစာရင်း
                 </button>
-                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="materialInfo">
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200 myanmar-text" data-tab="materialInfo">
                     <i class="fas fa-box-open mr-2"></i>ပစ္စည်းအချက်အလက်
                 </button>
-                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="serviceInfo">
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200 myanmar-text" data-tab="serviceInfo">
                     <i class="fas fa-tools mr-2"></i>ဝန်ဆောင်မှုအချက်အလက်
                 </button>
                 <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="userManagement">
