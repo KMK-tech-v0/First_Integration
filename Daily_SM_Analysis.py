@@ -791,7 +791,7 @@ df_filtered_html = df_filtered.to_html(
 detail_data_modal_html = f"""
 <div id="detailDataModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); z-index:9999;">
   <div style="background:#fff; margin:40px auto; padding:25px; border-radius:10px; max-width:1100px; min-width:350px; position:relative; overflow-y: auto; max-height: calc(100vh - 80px); box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-    <button onclick="document.getElementById('detailDataModal').style.display='none'" style="position:absolute; top:8px; right:8px; font-size:1.1em; background:none; border:none; cursor:pointer; color:#888;">✖</button>
+    <button onclick="document.getElementById('detailDataModal').style.display='none'" style="position:absolute; top:8px; right:8px; font-size:1.1em; background:none; border:none; cursor:pointer; color:#888;">���</button>
     <h2>🗃️ Detail Data Table (Interactive)</h2>
     <p>This interactive table provides advanced search, filtering, and pagination for detailed data.</p>
     <div class="column-filters-container" id="detail-column-filters">
@@ -926,8 +926,9 @@ for render_type in render_types:
             issue_percent = (issue_counts / num_sites * 100).round(2)
             summary = pd.DataFrame({'Count': issue_counts, 'Percentage': issue_percent})
             # Generate HTML for Site_IDs within details/summary tags for expandability.
+            newline_char = '\n'  # Define backslash outside f-string
             summary['Site_IDs'] = summary.index.map(
-                lambda x: f"<details><summary>Show Site_IDs</summary><div style='white-space: normal;'>{textwrap.fill(', '.join(map(str, sub_sites.loc[sub_sites['Issue_Identity'] == x, 'Site_ID'].tolist())), 100).replace('\\n', '<br>')}</div></details>"
+                lambda x: f"<details><summary>Show Site_IDs</summary><div style='white-space: normal;'>{textwrap.fill(', '.join(map(str, sub_sites.loc[sub_sites['Issue_Identity'] == x, 'Site_ID'].tolist())), 100).replace(newline_char, '<br>')}</div></details>"
             )
             html_parts.append(f"<h3>Sub_Office: {sub_office}</h3>{summary.to_html(escape=False)}")
 
