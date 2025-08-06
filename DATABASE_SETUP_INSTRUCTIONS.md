@@ -99,7 +99,7 @@ Server=DESKTOP-17P73P0\SQLEXPRESS;Database=api;User Id=kmk_sql;Password=kmk@1619
 ### For Node.js (using mssql package):
 ```javascript
 const config = {
-    server: 'localhost',
+    server: 'DESKTOP-17P73P0\\SQLEXPRESS',
     database: 'api',
     user: 'kmk_sql',
     password: 'kmk@161998',
