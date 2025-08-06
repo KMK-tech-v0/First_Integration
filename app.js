@@ -929,6 +929,90 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Modern Navigation Block Functionality
+function initModernNavigation() {
+    // Add event listeners to navigation blocks
+    document.querySelectorAll('.nav-block').forEach(block => {
+        block.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = block.dataset.target;
+
+            switch(target) {
+                case 'fiber':
+                    // Show fiber control system
+                    document.querySelector('.tab-button[data-tab="faultReports"]').click();
+                    break;
+                case 'sm':
+                    showComingSoonModal('SM Control DB', 'Satellite Management System', [
+                        'Satellite communication monitoring',
+                        'Signal strength optimization',
+                        'Network topology management',
+                        'Performance analytics dashboard'
+                    ]);
+                    break;
+                case 'fuel':
+                    showComingSoonModal('Fuel Control DB', 'Fuel Management System', [
+                        'Fuel consumption tracking',
+                        'Generator monitoring',
+                        'Automatic refuel scheduling',
+                        'Cost optimization reports'
+                    ]);
+                    break;
+                case 'about':
+                    window.open('https://www.myanmarpadauk.com/article/blog/10/index.html', '_blank');
+                    break;
+                case 'contact':
+                    window.open('https://www.myanmarpadauk.com/contact', '_blank');
+                    break;
+            }
+        });
+    });
+
+    // Coming Soon Modal functionality
+    const modal = document.getElementById('comingSoonModal');
+    const closeBtn = document.getElementById('closeComingSoonModal');
+    const notifyBtn = document.getElementById('notifyMeBtn');
+
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    notifyBtn.addEventListener('click', () => {
+        showMessage('✅ You will be notified when this feature becomes available!', 'success');
+        modal.classList.remove('show');
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+}
+
+function showComingSoonModal(title, description, features) {
+    const modal = document.getElementById('comingSoonModal');
+    const titleEl = document.getElementById('comingSoonTitle');
+    const descEl = document.getElementById('comingSoonDescription');
+
+    titleEl.textContent = title + ' - Coming Soon!';
+    descEl.textContent = description + ' is currently under development and will be available soon.';
+
+    // Update feature list
+    const featureElements = ['feature1', 'feature2', 'feature3', 'feature4'];
+    featureElements.forEach((id, index) => {
+        const el = document.getElementById(id);
+        if (features[index]) {
+            el.textContent = '• ' + features[index];
+            el.style.display = 'block';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+
+    modal.classList.add('show');
+}
+
 // Mock form submission to show functionality
 document.getElementById('reportForm').addEventListener('submit', (e) => {
     e.preventDefault();
