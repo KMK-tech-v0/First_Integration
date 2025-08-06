@@ -58,12 +58,35 @@ function getAuthHeaders() {
 // Function to check authentication status and manage UI visibility
 async function checkAuth() {
     const token = localStorage.getItem('access_token');
+    const demoMode = localStorage.getItem('demo_mode');
+    const demoUsername = localStorage.getItem('demo_username');
     const authContainer = document.getElementById('authContainer');
     const appContent = document.getElementById('appContent');
     const loggedInUserSpan = document.getElementById('loggedInUser');
     const navLinksAfterLogin = document.querySelectorAll('.login-nav .nav-link');
 
     if (token) {
+        // Check if we're in demo mode (backend not available)
+        if (demoMode === 'true') {
+            // Demo mode - skip backend validation
+            loggedInUserSpan.textContent = `Demo Mode - Logged in as: ${demoUsername || 'User'} (Backend not connected)`;
+            authContainer.classList.add('hidden');
+            appContent.classList.remove('hidden');
+            document.body.style.paddingTop = '108px';
+
+            // Enable navigation links
+            navLinksAfterLogin.forEach(link => {
+                if (!link.dataset.featureStatus || link.dataset.featureStatus !== 'unavailable') {
+                    link.classList.remove('disabled-link');
+                    link.style.pointerEvents = 'auto';
+                }
+            });
+
+            // Show the first tab
+            document.querySelector('.tab-button[data-tab="faultReports"]').click();
+            return;
+        }
+
         try {
             // Attempt to access a protected route to validate the token
             const response = await fetch(`${API_BASE_URL}/protected`, {
@@ -92,40 +115,48 @@ async function checkAuth() {
             } else {
                 // Token invalid or expired
                 console.error("Token validation failed:", response.status);
-                localStorage.removeItem('access_token');
-                authContainer.classList.remove('hidden');
-                appContent.classList.add('hidden');
-                document.body.style.paddingTop = '0'; // Reset padding
+                clearAuthData();
                 showAuthMessage('Your session has expired or is invalid. Please log in again.', 'warning');
-                // Disable navigation links if not logged in
-                navLinksAfterLogin.forEach(link => {
-                    link.classList.add('disabled-link');
-                    link.style.pointerEvents = 'none'; // Disable pointer events
-                });
+                resetToLoginState(authContainer, appContent, navLinksAfterLogin);
             }
         } catch (error) {
             console.error('Error validating token:', error);
-            localStorage.removeItem('access_token');
-            authContainer.classList.remove('hidden');
-            appContent.classList.add('hidden');
-            document.body.style.paddingTop = '0'; // Reset padding
+
+            // If it's a network error, try demo mode
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                console.log('Backend not available, switching to demo mode');
+                localStorage.setItem('demo_mode', 'true');
+                localStorage.setItem('demo_username', 'demo_user');
+                checkAuth(); // Retry with demo mode
+                return;
+            }
+
+            clearAuthData();
             showAuthMessage('Could not connect to authentication server. Please try again.', 'error');
-            // Disable navigation links if not logged in
-            navLinksAfterLogin.forEach(link => {
-                link.classList.add('disabled-link');
-                link.style.pointerEvents = 'none'; // Disable pointer events
-            });
+            resetToLoginState(authContainer, appContent, navLinksAfterLogin);
         }
     } else {
-        authContainer.classList.remove('hidden');
-        appContent.classList.add('hidden');
-        document.body.style.paddingTop = '0'; // Reset padding
-        // Disable navigation links if not logged in
-        navLinksAfterLogin.forEach(link => {
-            link.classList.add('disabled-link');
-            link.style.pointerEvents = 'none'; // Disable pointer events
-        });
+        resetToLoginState(authContainer, appContent, navLinksAfterLogin);
     }
+}
+
+// Helper function to clear authentication data
+function clearAuthData() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('demo_mode');
+    localStorage.removeItem('demo_username');
+}
+
+// Helper function to reset to login state
+function resetToLoginState(authContainer, appContent, navLinksAfterLogin) {
+    authContainer.classList.remove('hidden');
+    appContent.classList.add('hidden');
+    document.body.style.paddingTop = '0'; // Reset padding
+    // Disable navigation links if not logged in
+    navLinksAfterLogin.forEach(link => {
+        link.classList.add('disabled-link');
+        link.style.pointerEvents = 'none'; // Disable pointer events
+    });
 }
 
 // Handle login/registration form submission
