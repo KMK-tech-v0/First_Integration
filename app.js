@@ -51,12 +51,8 @@ async function safeFetch(url, options = {}) {
              error.message.includes('NetworkError') ||
              error.message.includes('network'))) {
 
-            // Enable demo mode if not already enabled
-            if (!localStorage.getItem('demo_mode')) {
-                localStorage.setItem('demo_mode', 'true');
-                localStorage.setItem('demo_username', 'demo_user');
-                console.log('Network error detected, enabling demo mode');
-            }
+            // Don't automatically enable demo mode here
+            console.log('Network error detected in fetch');
 
             // Re-throw with a more specific error
             const networkError = new Error('Backend server not available');
