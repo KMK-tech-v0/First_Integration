@@ -1,90 +1,1365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Utilities Project</title>
+    <title>MMP ဖိုက်ဘာ ချို့ယွင်းချက်အစီရင်ခံစနစ်</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Leaflet CSS for map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="icon" href="/static/favicon.ico">
     <style>
+        /* Custom CSS variables for consistent theming based on myanmarpadauk.com */
+        :root {
+            --primary-color: #004c97; /* Deep Blue from Myanmar Padauk */
+            --secondary-color: #0066cc; /* Lighter Blue for accents/hover */
+            --accent-color: #ffcc00; /* Gold/Yellow for highlights */
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #f5f7fa;
+            --dark-gray: #333333; /* Darker text */
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
         }
-        .script-list {
-            display: grid;
-            gap: 10px;
-            margin-top: 20px;
+
+        .header-bg {
+            background-color: var(--primary-color);
         }
-        .script-item {
-            background: #f5f5f5;
-            padding: 10px;
-            border-left: 4px solid #007acc;
-            border-radius: 4px;
+
+        /* Sticky header */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100; /* Higher z-index for header */
         }
-        .script-name {
-            font-weight: bold;
-            color: #007acc;
+
+        /* Sticky tab navigation */
+        .sticky-tabs {
+            position: fixed;
+            top: 64px; /* Below the header */
+            width: 100%;
+            z-index: 90; /* Below header, above content */
+            background-color: var(--light-gray); /* Match body background */
+            border-bottom: 1px solid var(--border-color);
         }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        .tab-button.active {
+            background-color: var(--secondary-color);
             color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            text-align: center;
+            border-bottom: 3px solid var(--accent-color);
         }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: var(--dark-gray); /* Changed text color for better contrast on yellow */
+        }
+
+        .btn-accent:hover {
+            background-color: #e0b300; /* Slightly darker yellow on hover */
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .input-field, .select-field, .textarea-field {
+            border: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000; /* Ensure modals are on top of everything */
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            z-index: 1001; /* Content above overlay */
+        }
+
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1002; /* Message box on top of everything */
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            display: none; /* Hidden by default */
+        }
+
+        .message-box.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .message-box.error {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .message-box.warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        /* Leaflet map styling */
+        #map, #editMap {
+            height: 250px; /* Smaller map size */
+            width: 100%;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            cursor: pointer; /* Indicate it's clickable */
+            z-index: 1; /* Default z-index for maps in forms */
+        }
+
+        #largeMapModalMap {
+            height: 500px; /* Larger map size for modal */
+            width: 100%;
+            border-radius: 0.5rem;
+            z-index: 1001; /* Ensure map in modal is above other elements in modal */
+        }
+
+        /* Custom file input styling */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .file-input-button:hover {
+            background-color: #d35400;
+        }
+
+        .photo-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview-item .remove-photo-button {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .photo-preview-item .photo-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .photo-preview-item .edit-label-button {
+            position: absolute;
+            bottom: 0.25rem;
+            left: 0.25rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 0.25rem;
+            padding: 0.1rem 0.3rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .photo-preview-item.new-photo-placeholder {
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .photo-preview-item.new-photo-placeholder i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .data-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: bold;
+            font-size: 0.8rem; /* Smaller font for table headers */
+        }
+
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem; /* Smaller font for table cells */
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+
+        .data-table tr:hover {
+            background-color: #e0eaf3;
+        }
+
+        /* Hide number input arrows */
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;   /* Chrome, Safari */
+        margin: 0;
+        }
+
+        /* NEW: Slideshow background styles */
+        .slideshow-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0; /* Ensure it's behind the login form */
+        }
+
+        .slideshow-background img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0; /* Start hidden */
+            animation: imageFade 30s infinite; /* Adjusted duration for 6 images (5s per image) */
+        }
+
+        /* Animation delays for each image */
+        .slideshow-background img:nth-child(1) { animation-delay: 0s; }
+        .slideshow-background img:nth-child(2) { animation-delay: 5s; }
+        .slideshow-background img:nth-child(3) { animation-delay: 10s; }
+        .slideshow-background img:nth-child(4) { animation-delay: 15s; }
+        .slideshow-background img:nth-child(5) { animation-delay: 20s; }
+        .slideshow-background img:nth-child(6) { animation-delay: 25s; }
+
+        @keyframes imageFade {
+            0% { opacity: 0; transform: scale(1.05); }
+            10% { opacity: 1; transform: scale(1); }
+            20% { opacity: 1; transform: scale(1); }
+            30% { opacity: 0; transform: scale(1.05); }
+            100% { opacity: 0; }
+        }
+
+        /* Overlay for readability */
+        .login-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Dark semi-transparent overlay */
+            z-index: 1; /* Above slideshow, below form */
+        }
+
+        /* Adjust login form positioning and background */
+        #authContainer {
+            position: relative; /* Needed for z-index context */
+            z-index: 2; /* Ensure form is above overlay */
+            background-color: transparent; /* Make background transparent to show slideshow */
+            flex-direction: column; /* Stack logo, nav, and form vertically */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            padding-top: 0; /* Reset padding from previous version */
+        }
+
+        #authContainer > div.login-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for the form card */
+            position: relative; /* Ensure form content is on top of its own semi-transparent background */
+            z-index: 3;
+            max-width: 480px; /* Slightly wider for better layout */
+            width: 90%; /* Responsive width */
+            padding: 2.5rem; /* More padding */
+        }
+
+        /* Navigation styles for login page */
+        .login-nav {
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+            width: 100%;
+            padding: 0.75rem 0;
+            margin-bottom: 2rem; /* Space between nav and login card */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 4; /* Above login card for dropdowns */
+        }
+
+        .login-nav ul {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .login-nav li {
+            position: relative;
+            margin: 0 1rem;
+        }
+
+        .login-nav a, .login-nav .nav-dropdown-toggle {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .login-nav a:hover, .login-nav .nav-dropdown-toggle:hover {
+            color: var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px); /* Subtle lift effect */
+        }
+
+        .login-nav .nav-dropdown-toggle i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .login-nav .nav-dropdown-toggle.active i {
+            transform: rotate(180deg);
+        }
+
+        .login-nav .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            min-width: 180px;
+            border-radius: 0.375rem;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 0;
+            z-index: 10; /* Ensure dropdown is on top */
+        }
+
+        .login-nav li.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .login-nav .dropdown-menu a {
+            padding: 0.75rem 1rem;
+            color: white;
+            display: block;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .login-nav .dropdown-menu a:hover {
+            background-color: var(--secondary-color);
+            color: white; /* Keep white on hover for dropdown items */
+            transform: none; /* No lift for dropdown items */
+        }
+
+        .login-nav .disabled-link {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Company Info on Login Page */
+        .company-info {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem 2.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            max-width: 480px; /* Match login card width */
+            width: 90%;
+            position: relative;
+            z-index: 3;
+        }
+
+        .company-info img {
+            max-height: 60px;
+            width: auto;
+            border-radius: 0.25rem;
+        }
+
+        .company-info h1 {
+            color: var(--primary-color);
+            font-size: 1.75rem; /* Larger headline */
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 768px) {
+            .login-nav ul {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 1rem;
+            }
+            .login-nav li {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+            .login-nav a, .login-nav .nav-dropdown-toggle {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .login-nav .dropdown-menu {
+                position: static; /* Allow dropdown to flow in document */
+                transform: none;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(0, 0, 0, 0.6);
+                padding-left: 1rem;
+            }
+            .company-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            .company-info img {
+                max-height: 50px;
+            }
+            .company-info h1 {
+                font-size: 1.5rem;
+            }
+        }
+
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Python Utilities Project</h1>
-        <p>Collection of Python utility scripts for various automation tasks</p>
+<body class="min-h-screen flex flex-col">
+    <!-- Message Box -->
+    <div id="messageBox" class="message-box"></div>
+
+    <!-- Login/Registration Container (Initially visible if not logged in) -->
+    <div id="authContainer" class="min-h-screen flex items-center justify-center p-4">
+        <!-- Slideshow Background -->
+        <div class="slideshow-background">
+            <img src="https://placehold.co/1920x1080/004c97/ffffff?text=Telecom+Tower" alt="Telecom Tower">
+            <img src="https://placehold.co/1920x1080/0066cc/ffffff?text=Fiber+Optic+Cables" alt="Fiber Optic Cables">
+            <img src="https://placehold.co/1920x1080/ffcc00/333333?text=Network+Servers" alt="Network Servers">
+            <img src="https://placehold.co/1920x1080/27ae60/ffffff?text=Data+Center" alt="Data Center">
+            <img src="https://placehold.co/1920x1080/34495e/ffffff?text=Technician+Working" alt="Technician Working">
+            <img src="https://placehold.co/1920x1080/004c97/ffffff?text=Satellite+Dish" alt="Satellite Dish">
+        </div>
+        <!-- Overlay for readability -->
+        <div class="login-overlay"></div>
+
+        <!-- Company Info Section -->
+        <div class="company-info">
+            <img src="https://scontent.fygn4-1.fna.fbcdn.net/v/t39.30808-6/300452667_401140038890737_7479860341770638062_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=YQ2Zf87w62cQ7kNw_gP3pY0&_nc_ht=scontent.fygn4-1.fna&oh=00_AYCgK1sP2k5y-4f2y_5f-3v6e5g3h-2d7c5b4a2e1f&oe=669E4B5E" alt="Company Logo" onerror="this.onerror=null;this.src='https://placehold.co/60x60/004c97/ffffff?text=Logo';">
+            <h1>MYANMAR PADAUK ENGINEERING & CONSTRUCTION CO.,LTD</h1>
+        </div>
+
+        <!-- Navigation Tab (above login ui box) -->
+        <nav class="login-nav">
+            <ul>
+                <li class="nav-item group">
+                    <a href="#" class="nav-dropdown-toggle" data-target="fiber-db-dropdown">
+                        <i class="fas fa-network-wired mr-2"></i>Fiber Control DB <i class="fas fa-chevron-down ml-2 transition-transform duration-300"></i>
+                    </a>
+                    <ul id="fiber-db-dropdown" class="dropdown-menu hidden group-hover:block">
+                        <li><a href="#" id="navFiberReports" class="nav-link">Fault Reports</a></li>
+                        <li><a href="#" id="navMaterialInventory" class="nav-link">Material Inventory</a></li>
+                        <li><a href="#" id="navMaterialInfo" class="nav-link">Material Info</a></li>
+                        <li><a href="#" id="navServiceInfo" class="nav-link">Service Info</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item group">
+                    <a href="#" class="nav-dropdown-toggle" data-target="sm-db-dropdown">
+                        <i class="fas fa-satellite-dish mr-2"></i>SM Control DB <i class="fas fa-chevron-down ml-2 transition-transform duration-300"></i>
+                    </a>
+                    <ul id="sm-db-dropdown" class="dropdown-menu hidden group-hover:block">
+                        <li><a href="#" class="nav-link disabled-link" data-feature-status="unavailable">Feature 1 (Developing)</a></li>
+                        <li><a href="#" class="nav-link disabled-link" data-feature-status="unavailable">Feature 2 (Developing)</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item group">
+                    <a href="#" class="nav-dropdown-toggle" data-target="fuel-db-dropdown">
+                        <i class="fas fa-gas-pump mr-2"></i>Fuel Control DB <i class="fas fa-chevron-down ml-2 transition-transform duration-300"></i>
+                    </a>
+                    <ul id="fuel-db-dropdown" class="dropdown-menu hidden group-hover:block">
+                        <li><a href="#" class="nav-link disabled-link" data-feature-status="unavailable">Feature A (Developing)</a></li>
+                        <li><a href="#" class="nav-link disabled-link" data-feature-status="unavailable">Feature B (Developing)</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                <a href="https://www.myanmarpadauk.com/article/blog/10/index.html" target="_blank" rel="noopener noreferrer" class="nav-link">
+                    <i class="fas fa-info-circle mr-2"></i>ABOUT US
+                    </a>
+                </li>
+        <li class="nav-item">
+    <a href="https://www.myanmarpadauk.com/contact" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <i class="fas fa-envelope mr-2"></i>CONTACT US
+    </a>
+</li>
+        </nav>
+
+        <div class="login-card bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 id="authTitle" class="text-2xl font-bold text-center mb-6 text-gray-800">Login</h2>
+
+            <div id="messageBoxAuth" class="hidden p-3 mb-4 rounded-md text-sm" role="alert"></div>
+
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" id="username" name="username" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <button type="submit" id="authSubmitBtn"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Login
+                </button>
+                <p class="text-center text-sm mt-4">
+                    Don't have an account? <a href="#" id="toggleAuthMode" class="text-indigo-600 hover:text-indigo-800">Register here</a>
+                </p>
+            </form>
+        </div>
     </div>
 
-    <h2>Available Scripts</h2>
-    <div class="script-list">
-        <div class="script-item">
-            <div class="script-name">B2B_Cleaning.py</div>
-            <div>B2B data cleaning and processing utility</div>
+    <!-- Main Application Content (Initially hidden) -->
+    <div id="appContent" class="hidden">
+        <!-- Header -->
+        <header class="header-bg text-white p-4 shadow-md sticky-header">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">MMP ဖိုက်ဘာ ချို့ယွင်းချက်အစီရင်ခံစနစ်</h1>
+                <nav>
+                    <div class="flex items-center space-x-4">
+                        <span id="loggedInUser" class="text-sm"></span>
+                        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md">Logout</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-border-color sticky-tabs">
+            <div class="container mx-auto flex">
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200 active" data-tab="faultReports">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>ချို့ယွင်းချက်အစီရင်ခံစာများ
+                </button>
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="materialInventory">
+                    <i class="fas fa-warehouse mr-2"></i>ပစ္စည်းစာရင်း
+                </button>
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="materialInfo">
+                    <i class="fas fa-box-open mr-2"></i>ပစ္စည်းအချက်အလက်
+                </button>
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="serviceInfo">
+                    <i class="fas fa-tools mr-2"></i>ဝန်ဆောင်မှုအချက်အလက်
+                </button>
+                <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="userManagement">
+                    <i class="fas fa-users-cog mr-2"></i>User Management
+                </button>
+            </div>
         </div>
-        <div class="script-item">
-            <div class="script-name">B2B_report_generate.py</div>
-            <div>B2B report generation utility</div>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto p-4">
+            <!-- Tab Content: Fault Reports -->
+            <div id="faultReports" class="tab-content">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">အစီရင်ခံစာအသစ်ထည့်သွင်းရန်</h2>
+                    <form id="reportForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Form fields for Fault Report -->
+                        <div>
+                            <label for="transNum" class="block text-sm font-medium text-gray-700">Transaction Number</label>
+                            <input type="text" id="transNum" name="trans_num" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" placeholder="အလိုအလျောက်ထုတ်ပေးမည်" readonly>
+                        </div>
+                        <div>
+                            <label for="projectName" class="block text-sm font-medium text-gray-700">Project Name <span class="text-danger-color">*</span></label>
+                            <input type="text" id="projectName" name="project_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="faultName" class="block text-sm font-medium text-gray-700">Fault Name <span class="text-danger-color">*</span></label>
+                            <input type="text" id="faultName" name="fault_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="circuitId" class="block text-sm font-medium text-gray-700">Circuit ID</label>
+                            <input type="text" id="circuitId" name="circuit_id" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="customerName" class="block text-sm font-medium text-gray-700">Customer Name</label>
+                            <input type="text" id="customerName" name="customer_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="customerAddress" class="block text-sm font-medium text-gray-700">Customer Address</label>
+                            <textarea id="customerAddress" name="customer_address" rows="2" class="mt-1 block w-full rounded-md shadow-sm textarea-field p-2"></textarea>
+                        </div>
+                        <div>
+                            <label for="pic" class="block text-sm font-medium text-gray-700">PIC</label>
+                            <input type="text" id="pic" name="pic" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="region" class="block text-sm font-medium text-gray-700">Region <span class="text-danger-color">*</span></label>
+                            <select id="region" name="region" class="mt-1 block w-full rounded-md shadow-sm select-field p-2" required>
+                                <option value="">Select Region</option>
+                                <option value="Yangon">Yangon</option>
+                                <option value="Mandalay">Mandalay</option>
+                                <option value="Naypyidaw">Naypyidaw</option>
+                                <option value="Sagaing">Sagaing</option>
+                                <option value="Magway">Magway</option>
+                                <option value="Bago">Bago</option>
+                                <option value="Ayeyarwady">Ayeyarwady</option>
+                                <option value="Mon">Mon</option>
+                                <option value="Kayin">Kayin</option>
+                                <option value="Rakhine">Rakhine</option>
+                                <option value="Shan">Shan</option>
+                                <option value="Kachin">Kachin</option>
+                                <option value="Kayah">Kayah</option>
+                                <option value="Chin">Chin</option>
+                                <option value="Tanintharyi">Tanintharyi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="township" class="block text-sm font-medium text-gray-700">Township <span class="text-danger-color">*</span></label>
+                            <input type="text" id="township" name="township" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="locationLat" class="block text-sm font-medium text-gray-700">GPS Latitude</label>
+                            <input type="number" step="any" id="locationLat" name="location_lat" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="locationLong" class="block text-sm font-medium text-gray-700">GPS Longitude</label>
+                            <input type="number" step="any" id="locationLong" name="location_long" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="mLatitude" class="block text-sm font-medium text-gray-700">Manual Latitude</label>
+                            <input type="number" step="any" id="mLatitude" name="m_latitude" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="mLongitude" class="block text-sm font-medium text-gray-700">Manual Longitude</label>
+                            <input type="number" step="any" id="mLongitude" name="m_longitude" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div class="md:col-span-2">
+                            <div id="map"></div>
+                            <p class="text-xs text-gray-500 mt-1 text-center">Click on the map to select a location. Click the map again to view a larger map.</p>
+                        </div>
+                        <div>
+                            <label for="raisedTime" class="block text-sm font-medium text-gray-700">Raised Time <span class="text-danger-color">*</span></label>
+                            <input type="datetime-local" id="raisedTime" name="raised_time" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="clearedTime" class="block text-sm font-medium text-gray-700">Cleared Time</label>
+                            <input type="datetime-local" id="clearedTime" name="cleared_time" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="rootCause" class="block text-sm font-medium text-gray-700">Root Cause</label>
+                            <textarea id="rootCause" name="root_cause" rows="3" class="mt-1 block w-full rounded-md shadow-sm textarea-field p-2"></textarea>
+                        </div>
+
+                        <!-- Photo Upload Section -->
+                        <div class="md:col-span-2 mt-4">
+                            <h3 class="text-lg font-semibold mb-2 text-primary-color">Photos</h3>
+                            <div class="file-input-wrapper">
+                                <button type="button" class="file-input-button">
+                                    <i class="fas fa-upload mr-2"></i>Upload Photos
+                                </button>
+                                <input type="file" id="photoUpload" multiple accept="image/*">
+                            </div>
+                            <div id="photoPreviewContainer" class="photo-preview-container">
+                                <!-- Photo previews will be added here -->
+                            </div>
+                        </div>
+
+                        <!-- Materials Used Section -->
+                        <div class="md:col-span-2 mt-4">
+                            <h3 class="text-lg font-semibold mb-2 text-primary-color">Materials Used</h3>
+                            <div id="materialsUsedContainer" class="space-y-2">
+                                <!-- Material input fields will be added here -->
+                            </div>
+                            <button type="button" id="addMaterialBtn" class="mt-4 btn-accent py-2 px-4 rounded-md">
+                                <i class="fas fa-plus mr-2"></i>Add Material
+                            </button>
+                        </div>
+
+                        <!-- Services Used Section -->
+                        <div class="md:col-span-2 mt-4">
+                            <h3 class="text-lg font-semibold mb-2 text-primary-color">Services Used</h3>
+                            <div id="servicesUsedContainer" class="space-y-2">
+                                <!-- Service input fields will be added here -->
+                            </div>
+                            <button type="button" id="addServiceBtn" class="mt-4 btn-accent py-2 px-4 rounded-md">
+                                <i class="fas fa-plus mr-2"></i>Add Service
+                            </button>
+                        </div>
+
+                        <div class="md:col-span-2 flex justify-end mt-6">
+                            <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
+                                <i class="fas fa-save mr-2"></i>အစီရင်ခံစာတင်သွင်းမည်
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Reports Table -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိချို့ယွင်းချက်အစီရင်ခံစာများ</h2>
+                    <div class="overflow-x-auto">
+                        <table id="reportsTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-4">Trans. No.</th>
+                                    <th class="py-3 px-4">Project Name</th>
+                                    <th class="py-3 px-4">Fault Name</th>
+                                    <th class="py-3 px-4">Region</th>
+                                    <th class="py-3 px-4">Township</th>
+                                    <th class="py-3 px-4">Raised Time</th>
+                                    <th class="py-3 px-4">Cleared Time</th>
+                                    <th class="py-3 px-4">Duration</th>
+                                    <th class="py-3 px-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTableBody">
+                                <!-- Reports will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Material Inventory -->
+            <div id="materialInventory" class="tab-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">ပစ္စည်းစာရင်း</h2>
+                    <div class="flex justify-end mb-4">
+                        <button id="generateInventoryReportBtn" class="btn-primary py-2 px-4 rounded-md">
+                            <i class="fas fa-file-alt mr-2"></i>Inventory Report ထုတ်မည်
+                        </button>
+                    </div>
+                    <!-- Add this right after the "Generate Inventory Report" button in the materialInventory tab -->
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                        <h3 class="text-lg font-semibold mb-3 text-primary-color">စစ်ထုတ်ရန် (Filters)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label for="filterMaterialCode" class="block text-sm font-medium text-gray-700">Material Code</label>
+                                <input type="text" id="filterMaterialCode" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" placeholder="Filter by code">
+                            </div>
+                            <div>
+                                <label for="filterMaterialName" class="block text-sm font-medium text-gray-700">Material Name</label>
+                                <input type="text" id="filterMaterialName" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" placeholder="Filter by name">
+                            </div>
+                            <div>
+                                <label for="filterMaterialType" class="block text-sm font-medium text-gray-700">Material Type</label>
+                                <input type="text" id="filterMaterialType" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" placeholder="Filter by type">
+                            </div>
+                            <div>
+                                <label for="filterBalance" class="block text-sm font-medium text-gray-700">Balance</label>
+                                <select id="filterBalance" class="mt-1 block w-full rounded-md shadow-sm select-field p-2">
+                                    <option value="">All</option>
+                                    <option value="positive">Positive Only</option>
+                                    <option value="negative">Negative Only</option>
+                                    <option value="zero">Zero Only</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between">
+                            <button id="resetFiltersBtn" class="btn-danger py-2 px-4 rounded-md">
+                                <i class="fas fa-times mr-2"></i>စစ်ထုတ်မှုမျ���း ဖျက်မည်
+                            </button>
+                            <div class="text-sm text-gray-500">
+                                Showing <span id="filteredCount">0</span> of <span id="totalCount">0</span> items
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="materialInventoryTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-4">ID</th>
+                                    <th class="py-3 px-4">Material Code</th>
+                                    <th class="py-3 px-4">Material Name</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">UoM</th>
+                                    <th class="py-3 px-4 text-right">Total Receipts</th>
+                                    <th class="py-3 px-4 text-right">Total Issues</th>
+                                    <th class="py-3 px-4 text-right">Total Returns</th>
+                                    <th class="py-3 px-4 text-right">Total Damages</th>
+                                    <th class="py-3 px-4 text-right">Total Adjustments</th>
+                                    <th class="py-3 px-4 text-right">Current Balance</th>
+                                    <th class="py-3 px-4 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="materialInventoryTableBody">
+                                <!-- Material inventory data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Material Info -->
+            <div id="materialInfo" class="tab-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">ပစ္စည်းအချက်အလက်အသစ်ထည့်သွင်းရန်</h2>
+                    <form id="materialInfoForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="newMaterialCode" class="block text-sm font-medium text-gray-700">Material Code <span class="text-danger-color">*</span></label>
+                            <input type="text" id="newMaterialCode" name="material_code" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="newMaterialName" class="block text-sm font-medium text-gray-700">Material Name <span class="text-danger-color">*</span></label>
+                            <input type="text" id="newMaterialName" name="material_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="newMaterialType" class="block text-sm font-medium text-gray-700">Material Type</label>
+                            <input type="text" id="newMaterialType" name="material_type" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newMaterialUom" class="block text-sm font-medium text-gray-700">UoM</label>
+                            <input type="text" id="newMaterialUom" name="uom" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newMaterialUnitPrice" class="block text-sm font-medium text-gray-700">Unit Price</label>
+                            <input type="number" step="0.01" id="newMaterialUnitPrice" name="unit_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newMaterialKCNPrice" class="block text-sm font-medium text-gray-700">KCN Price</label>
+                            <input type="number" step="0.01" id="newMaterialKCNPrice" name="kcn_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newMaterialSGGPrice" class="block text-sm font-medium text-gray-700">SGG Price</label>
+                            <input type="number" step="0.01" id="newMaterialSGGPrice" name="sgg_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div class="md:col-span-2 flex justify-end mt-4">
+                            <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
+                                <i class="fas fa-plus-circle mr-2"></i>ပစ္စည်းအချက်အလက်ထည့်မည်
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိပစ္စည်းအချက်အလက်များ</h2>
+                    <div class="overflow-x-auto">
+                        <table id="materialInfoTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-4">Code</th>
+                                    <th class="py-3 px-4">Name</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">UoM</th>
+                                    <th class="py-3 px-4">Unit Price</th>
+                                    <th class="py-3 px-4">KCN Price</th>
+                                    <th class="py-3 px-4">SGG Price</th>
+                                    <th class="py-3 px-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="materialInfoTableBody">
+                                <!-- Material info will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Service Info -->
+            <div id="serviceInfo" class="tab-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">ဝန်ဆောင်မှုအချက်အလက်အသစ်ထည့်သွင်းရန်</h2>
+                    <form id="serviceInfoForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="newServiceCode" class="block text-sm font-medium text-gray-700">Service Code <span class="text-danger-color">*</span></label>
+                            <input type="text" id="newServiceCode" name="service_code" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="newServiceName" class="block text-sm font-medium text-gray-700">Service Name <span class="text-danger-color">*</span></label>
+                            <input type="text" id="newServiceName" name="service_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="newServiceType" class="block text-sm font-medium text-gray-700">Service Type</label>
+                            <input type="text" id="newServiceType" name="service_type" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newServiceUom" class="block text-sm font-medium text-gray-700">UoM</label>
+                            <input type="text" id="newServiceUom" name="uom" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newServiceUnitPrice" class="block text-sm font-medium text-gray-700">Unit Price</label>
+                            <input type="number" step="0.01" id="newServiceUnitPrice" name="unit_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newServiceKCNPrice" class="block text-sm font-medium text-gray-700">KCN Price</label>
+                            <input type="number" step="0.01" id="newServiceKCNPrice" name="kcn_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div>
+                            <label for="newServiceSGGPrice" class="block text-sm font-medium text-gray-700">SGG Price</label>
+                            <input type="number" step="0.01" id="newServiceSGGPrice" name="sgg_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                        </div>
+                        <div class="md:col-span-2 flex justify-end mt-4">
+                            <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
+                                <i class="fas fa-plus-circle mr-2"></i>ဝန်ဆောင်မှုအချက်အလက်ထည့်မည်
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိဝန်ဆောင်မှုအချက်အလက်များ</h2>
+                    <div class="overflow-x-auto">
+                        <table id="serviceInfoTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-4">Code</th>
+                                    <th class="py-3 px-4">Name</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">UoM</th>
+                                    <th class="py-3 px-4">Unit Price</th>
+                                    <th class="py-3 px-4">KCN Price</th>
+                                    <th class="py-3 px-4">SGG Price</th>
+                                    <th class="py-3 px-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serviceInfoTableBody">
+                                <!-- Service info will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW Tab Content: User Management -->
+            <div id="userManagement" class="tab-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">အသုံးပြုသူအသစ်ထည့်သွင်းရ��် / ပြင်ဆင်ရန်</h2>
+                    <form id="userForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="hidden" id="userId" name="id">
+                        <div>
+                            <label for="userUsername" class="block text-sm font-medium text-gray-700">Username <span class="text-danger-color">*</span></label>
+                            <input type="text" id="userUsername" name="username" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                        </div>
+                        <div>
+                            <label for="userPassword" class="block text-sm font-medium text-gray-700">Password <span class="text-danger-color">*</span></label>
+                            <input type="password" id="userPassword" name="password" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                            <p class="text-xs text-gray-500 mt-1">Leave blank to keep current password when editing.</p>
+                        </div>
+                        <div>
+                            <label for="userRole" class="block text-sm font-medium text-gray-700">Role <span class="text-danger-color">*</span></label>
+                            <select id="userRole" name="role" class="mt-1 block w-full rounded-md shadow-sm select-field p-2" required>
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex justify-end gap-4 mt-4">
+                            <button type="button" id="cancelUserEditBtn" class="btn-danger py-2 px-4 rounded-md hidden">
+                                <i class="fas fa-times mr-2"></i>ပယ်ဖျက်မည်
+                            </button>
+                            <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
+                                <i class="fas fa-save mr-2"></i>အသုံးပြုသူသိမ်းမည်
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိအသုံးပြုသူများ</h2>
+                    <div class="overflow-x-auto">
+                        <table id="usersTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-4">ID</th>
+                                    <th class="py-3 px-4">Username</th>
+                                    <th class="py-3 px-4">Role</th>
+                                    <th class="py-3 px-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- User data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- END NEW Tab Content: User Management -->
+
+        </main>
+
+        <!-- Edit Report Modal -->
+        <div id="editReportModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="modal-content p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-6 text-primary-color">အစီရင်ခံစာပြင်ဆင်ရန်</h2>
+                <form id="editReportForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="hidden" id="editReportId">
+                    <input type="hidden" id="editTransNum">
+
+                    <div>
+                        <label for="editProjectName" class="block text-sm font-medium text-gray-700">Project Name <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editProjectName" name="project_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                    </div>
+                    <div>
+                        <label for="editFaultName" class="block text-sm font-medium text-gray-700">Fault Name <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editFaultName" name="fault_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                    </div>
+                    <div>
+                        <label for="editCircuitId" class="block text-sm font-medium text-gray-700">Circuit ID</label>
+                        <input type="text" id="editCircuitId" name="circuit_id" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editCustomerName" class="block text-sm font-medium text-gray-700">Customer Name</label>
+                        <input type="text" id="editCustomerName" name="customer_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editCustomerAddress" class="block text-sm font-medium text-gray-700">Customer Address</label>
+                        <textarea id="editCustomerAddress" name="customer_address" rows="2" class="mt-1 block w-full rounded-md shadow-sm textarea-field p-2"></textarea>
+                    </div>
+                    <div>
+                        <label for="editPic" class="block text-sm font-medium text-gray-700">PIC</label>
+                        <input type="text" id="editPic" name="pic" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editRegion" class="block text-sm font-medium text-gray-700">Region <span class="text-danger-color">*</span></label>
+                        <select id="editRegion" name="region" class="mt-1 block w-full rounded-md shadow-sm select-field p-2" required>
+                            <option value="">Select Region</option>
+                            <option value="Yangon">Yangon</option>
+                            <option value="Mandalay">Mandalay</option>
+                            <option value="Naypyidaw">Naypyidaw</option>
+                            <option value="Sagaing">Sagaing</option>
+                            <option value="Magway">Magway</option>
+                            <option value="Bago">Bago</option>
+                            <option value="Ayeyarwady">Ayeyarwady</option>
+                            <option value="Mon">Mon</option>
+                            <option value="Kayin">Kayin</option>
+                            <option value="Rakhine">Rakhine</option>
+                            <option value="Shan">Shan</option>
+                            <option value="Kachin">Kachin</option>
+                            <option value="Kayah">Kayah</option>
+                            <option value="Chin">Chin</option>
+                            <option value="Tanintharyi">Tanintharyi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="editTownship" class="block text-sm font-medium text-gray-700">Township <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editTownship" name="township" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                    </div>
+                    <div>
+                        <label for="editLocationLat" class="block text-sm font-medium text-gray-700">GPS Latitude</label>
+                        <input type="number" step="any" id="editLocationLat" name="location_lat" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editLocationLong" class="block text-sm font-medium text-gray-700">GPS Longitude</label>
+                        <input type="number" step="any" id="editLocationLong" name="location_long" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editMLatitude" class="block text-sm font-medium text-gray-700">Manual Latitude</label>
+                        <input type="number" step="any" id="editMLatitude" name="m_latitude" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editMLongitude" class="block text-sm font-medium text-gray-700">Manual Longitude</label>
+                        <input type="number" step="any" id="editMLongitude" name="m_longitude" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div class="md:col-span-2">
+                        <div id="editMap"></div>
+                        <p class="text-xs text-gray-500 mt-1 text-center">Click on the map to select a location. Click the map again to view a larger map.</p>
+                    </div>
+                    <div>
+                        <label for="editRaisedTime" class="block text-sm font-medium text-gray-700">Raised Time <span class="text-danger-color">*</span></label>
+                        <input type="datetime-local" id="editRaisedTime" name="raised_time" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                    </div>
+                    <div>
+                        <label for="editClearedTime" class="block text-sm font-medium text-gray-700">Cleared Time</label>
+                        <input type="datetime-local" id="editClearedTime" name="cleared_time" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="editRootCause" class="block text-sm font-medium text-gray-700">Root Cause</label>
+                        <textarea id="editRootCause" name="root_cause" rows="3" class="mt-1 block w-full rounded-md shadow-sm textarea-field p-2"></textarea>
+                    </div>
+
+                    <!-- Photos Section for Edit Modal -->
+                    <div class="md:col-span-2 mt-4">
+                        <h3 class="text-lg font-semibold mb-2 text-primary-color">Photos</h3>
+                        <div id="editPhotoPreviewContainer" class="photo-preview-container">
+                            <!-- Existing photo previews will be loaded here -->
+                        </div>
+                        <div class="file-input-wrapper mt-4">
+                            <button type="button" class="file-input-button">
+                                <i class="fas fa-upload mr-2"></i>Upload New Photos
+                            </button>
+                            <input type="file" id="editPhotoUpload" multiple accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Materials Used Section for Edit Modal -->
+                    <div class="md:col-span-2 mt-4">
+                        <h3 class="text-lg font-semibold mb-2 text-primary-color">Materials Used</h3>
+                        <div id="editMaterialsUsedContainer" class="space-y-2">
+                            <!-- Material input fields will be added here -->
+                        </div>
+                        <button type="button" id="editAddMaterialBtn" class="mt-4 btn-accent py-2 px-4 rounded-md">
+                            <i class="fas fa-plus mr-2"></i>Add Material
+                        </button>
+                    </div>
+
+                    <!-- Services Used Section for Edit Modal -->
+                    <div class="md:col-span-2 mt-4">
+                        <h3 class="text-lg font-semibold mb-2 text-primary-color">Services Used</h3>
+                        <div id="editServicesUsedContainer" class="space-y-2">
+                            <!-- Service input fields will be added here -->
+                        </div>
+                        <button type="button" id="editAddServiceBtn" class="mt-4 btn-accent py-2 px-4 rounded-md">
+                            <i class="fas fa-plus mr-2"></i>Add Service
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-2 flex justify-end gap-4 mt-6">
+                        <button type="button" id="closeEditModalBtn" class="btn-danger py-2 px-6 rounded-md text-lg">
+                            <i class="fas fa-times mr-2"></i>ပယ်ဖျက်မည်
+                        </button>
+                        <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
+                            <i class="fas fa-save mr-2"></i>ပြောင်းလဲမှုများသိမ်းမည်
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="script-item">
-            <div class="script-name">Connected_Wifi_Password.py</div>
-            <div>WiFi password management utility</div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="modal-content p-8 max-w-sm w-full text-center">
+                <h3 class="text-xl font-bold mb-4 text-primary-color">အတည်ပြုပါ</h3>
+                <p id="confirmationMessage" class="mb-6 text-gray-700">သင်ဤအရာကို ဖျက်လိုပါသလား။</p>
+                <div class="flex justify-center gap-4">
+                    <button id="cancelConfirmationBtn" class="btn-primary py-2 px-4 rounded-md">ပယ်ဖျက်မည်</button>
+                    <button id="confirmActionBtn" class="btn-danger py-2 px-4 rounded-md">ဖျက်မည်</button>
+                </div>
+            </div>
         </div>
-        <div class="script-item">
-            <div class="script-name">Daily_SM_Analysis.py</div>
-            <div>Daily social media analysis utility</div>
+
+        <!-- View Report Details Modal -->
+        <div id="viewReportModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="modal-content p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-6 text-primary-color">အစီရင်ခံစာအသေးစိတ်</h2>
+                <div id="viewReportDetails" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                    <!-- Details will be loaded here -->
+                </div>
+                <div class="mt-6 flex justify-end gap-4">
+                    <button id="exportExcelBtn" class="btn-accent py-2 px-4 rounded-md">
+                        <i class="fas fa-file-excel mr-2"></i>Excel ထုတ်မည်
+                    </button>
+                    <button id="exportPdfBtn" class="btn-accent py-2 px-4 rounded-md">
+                        <i class="fas fa-file-pdf mr-2"></i>PDF ထုတ်မည်
+                    </button>
+                    <button id="closeViewModalBtn" class="btn-primary py-2 px-4 rounded-md">
+                        <i class="fas fa-times mr-2"></i>ပိတ်မည်
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="script-item">
-            <div class="script-name">Mail_Reader.py</div>
-            <div>Email reading and processing utility</div>
+
+        <!-- Large Map Modal -->
+        <div id="largeMapModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="modal-content p-8 max-w-4xl w-full">
+                <h2 class="text-2xl font-bold mb-4 text-primary-color">မြေပုံအကြီးကြည့်ရန်</h2>
+                <div id="largeMapModalMap"></div>
+                <div class="flex justify-end mt-4">
+                    <button id="closeLargeMapModalBtn" class="btn-primary py-2 px-4 rounded-md">
+                        <i class="fas fa-times mr-2"></i>ပိတ်မည်
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="script-item">
-            <div class="script-name">SQL_Course_Created(MMP).py</div>
-            <div>SQL course creation utility</div>
+
+        <!-- Edit Material Info Modal -->
+        <div id="editMaterialInfoModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="modal-content p-8 max-w-xl w-full">
+                <h2 class="text-2xl font-bold mb-6 text-primary-color">ပစ္စည်းအချက်အလက်ပြင်ဆင်ရန်</h2>
+                <form id="editMaterialInfoForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="hidden" id="editMaterialInfoId">
+                    <div>
+                        <label for="editMaterialCode" class="block text-sm font-medium text-gray-700">Material Code <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editMaterialCode" name="material_code" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required readonly>
+                    </div>
+                    <div>
+                        <label for="editMaterialName" class="block text-sm font-medium text-gray-700">Material Name <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editMaterialName" name="material_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                    </div>
+                    <div>
+                        <label for="editMaterialType" class="block text-sm font-medium text-gray-700">Material Type</label>
+                        <input type="text" id="editMaterialType" name="material_type" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editMaterialUom" class="block text-sm font-medium text-gray-700">UoM</label>
+                        <input type="text" id="editMaterialUom" name="uom" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editMaterialUnitPrice" class="block text-sm font-medium text-gray-700">Unit Price</label>
+                        <input type="number" step="0.01" id="editMaterialUnitPrice" name="unit_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editMaterialKCNPrice" class="block text-sm font-medium text-gray-700">KCN Price</label>
+                        <input type="number" step="0.01" id="editMaterialKCNPrice" name="kcn_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editMaterialSGGPrice" class="block text-sm font-medium text-gray-700">SGG Price</label>
+                        <input type="number" step="0.01" id="editMaterialSGGPrice" name="sgg_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div class="md:col-span-2 flex justify-end gap-4 mt-4">
+                        <button type="button" id="closeEditMaterialInfoModalBtn" class="btn-danger py-2 px-4 rounded-md">
+                            <i class="fas fa-times mr-2"></i>ပယ်ဖျက်မည်
+                        </button>
+                        <button type="submit" class="btn-primary py-2 px-4 rounded-md">
+                            <i class="fas fa-save mr-2"></i>ပြောင်းလဲမှုများသိမ်းမည်
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="script-item">
-            <div class="script-name">exp_detect_improved.py</div>
-            <div>Improved expense detection utility</div>
-        </div>
-        <div class="script-item">
-            <div class="script-name">incident_py.py</div>
-            <div>Incident management utility</div>
+
+        <!-- Edit Service Info Modal -->
+        <div id="editServiceInfoModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="modal-content p-8 max-w-xl w-full">
+                <h2 class="text-2xl font-bold mb-6 text-primary-color">ဝန်ဆောင်မှုအချက်အလက်ပြင်ဆင်ရန်</h2>
+                <form id="editServiceInfoForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="hidden" id="editServiceInfoId">
+                    <div>
+                        <label for="editServiceCode" class="block text-sm font-medium text-gray-700">Service Code <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editServiceCode" name="service_code" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required readonly>
+                    </div>
+                    <div>
+                        <label for="editServiceName" class="block text-sm font-medium text-gray-700">Service Name <span class="text-danger-color">*</span></label>
+                        <input type="text" id="editServiceName" name="service_name" class="mt-1 block w-full rounded-md shadow-sm input-field p-2" required>
+                    </div>
+                    <div>
+                        <label for="editServiceType" class="block text-sm font-medium text-gray-700">Service Type</label>
+                        <input type="text" id="editServiceType" name="service_type" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editServiceUom" class="block text-sm font-medium text-gray-700">UoM</label>
+                        <input type="text" id="editServiceUom" name="uom" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editServiceUnitPrice" class="block text-sm font-medium text-gray-700">Unit Price</label>
+                        <input type="number" step="0.01" id="editServiceUnitPrice" name="unit_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editServiceKCNPrice" class="block text-sm font-medium text-gray-700">KCN Price</label>
+                        <input type="number" step="0.01" id="editServiceKCNPrice" name="kcn_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div>
+                        <label for="editServiceSGGPrice" class="block text-sm font-medium text-gray-700">SGG Price</label>
+                        <input type="number" step="0.01" id="editServiceSGGPrice" name="sgg_price" class="mt-1 block w-full rounded-md shadow-sm input-field p-2">
+                    </div>
+                    <div class="md:col-span-2 flex justify-end gap-4 mt-4">
+                        <button type="button" id="closeEditServiceInfoModalBtn" class="btn-danger py-2 px-4 rounded-md">
+                            <i class="fas fa-times mr-2"></i>ပယ်ဖျက်မည်
+                        </button>
+                        <button type="submit" class="btn-primary py-2 px-4 rounded-md">
+                            <i class="fas fa-save mr-2"></i>ပြောင်းလဲမှုများသိမ်းမည်
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <h2>How to Run Scripts</h2>
-    <p>To run any of these Python scripts, use the following command in your terminal:</p>
-    <pre><code>python3 script_name.py</code></pre>
-    
-    <h2>Project Status</h2>
-    <p>✅ Server is running successfully on port 8000</p>
-    <p>✅ All Python scripts are accessible</p>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
