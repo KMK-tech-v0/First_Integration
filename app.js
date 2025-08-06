@@ -74,6 +74,9 @@ async function checkAuth() {
             appContent.classList.remove('hidden');
             document.body.style.paddingTop = '108px';
 
+            // Show demo banner
+            document.getElementById('demoBanner').classList.remove('hidden');
+
             // Enable navigation links
             navLinksAfterLogin.forEach(link => {
                 if (!link.dataset.featureStatus || link.dataset.featureStatus !== 'unavailable') {
