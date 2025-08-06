@@ -17,14 +17,8 @@ window.addEventListener('unhandledrejection', function(event) {
         // Prevent the default error handling
         event.preventDefault();
 
-        // Enable demo mode if not already enabled
-        if (!localStorage.getItem('demo_mode')) {
-            localStorage.setItem('demo_mode', 'true');
-            localStorage.setItem('demo_username', 'demo_user');
-
-            // Show a user-friendly message
-            showAuthMessage('Backend server not available. Running in demo mode.', 'warning');
-        }
+        // Log the error but don't automatically enable demo mode
+        console.log('Network error detected - demo mode will be enabled on login attempt');
     }
 });
 
