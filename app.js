@@ -185,12 +185,13 @@ async function checkAuth() {
         } catch (error) {
             console.error('Error validating token:', error);
 
-            // If it's a network error, try demo mode - improved error detection
-            if (error.name === 'TypeError' &&
-                (error.message.includes('fetch') ||
-                 error.message.includes('Failed to fetch') ||
-                 error.message.includes('NetworkError') ||
-                 error.message.includes('network'))) {
+            // If it's a network error, try demo mode
+            if (error.name === 'NetworkError' ||
+                (error.name === 'TypeError' &&
+                 (error.message.includes('fetch') ||
+                  error.message.includes('Failed to fetch') ||
+                  error.message.includes('NetworkError') ||
+                  error.message.includes('network')))) {
                 console.log('Backend not available, switching to demo mode');
                 localStorage.setItem('demo_mode', 'true');
                 localStorage.setItem('demo_username', 'demo_user');
