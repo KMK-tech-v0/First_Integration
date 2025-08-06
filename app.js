@@ -215,8 +215,12 @@ document.getElementById('authForm').addEventListener('submit', async (event) => 
     } catch (error) {
         console.error('Authentication error:', error);
 
-        // Handle network errors (no backend server)
-        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        // Handle network errors (no backend server) - improved error detection
+        if (error.name === 'TypeError' &&
+            (error.message.includes('fetch') ||
+             error.message.includes('Failed to fetch') ||
+             error.message.includes('NetworkError') ||
+             error.message.includes('network'))) {
             handleOfflineAuth(username, password, endpoint, authTitle);
         } else {
             showAuthMessage('Network error or server unreachable.', 'error');
@@ -671,7 +675,7 @@ async function fetchMaterialInfoForDropdown() {
     } catch (error) {
         console.error("Error fetching material info for dropdown:", error);
         if (error.message !== 'Unauthorized') {
-            showMessage("ပစ္စည်းအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်သည်", "error");
+            showMessage("ပစ္စည်းအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်���ည်", "error");
         }
     }
 }
