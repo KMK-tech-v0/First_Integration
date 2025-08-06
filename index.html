@@ -532,6 +532,19 @@
     <!-- Message Box -->
     <div id="messageBox" class="message-box"></div>
 
+    <!-- Demo Mode Banner -->
+    <div id="demoBanner" class="demo-banner hidden">
+        <div class="flex items-center justify-between p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <span><strong>Demo Mode:</strong> Backend server not connected. All data is simulated for demonstration purposes.</span>
+            </div>
+            <button onclick="document.getElementById('demoBanner').classList.add('hidden')" class="text-yellow-700 hover:text-yellow-900">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Login/Registration Container (Initially visible if not logged in) -->
     <div id="authContainer" class="min-h-screen flex items-center justify-center p-4">
         <!-- Slideshow Background -->
@@ -646,7 +659,7 @@
                     <i class="fas fa-exclamation-triangle mr-2"></i>ချို့ယွင်းချက်အစီရင်ခံစာများ
                 </button>
                 <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="materialInventory">
-                    <i class="fas fa-warehouse mr-2"></i>ပစ္စည်းစာရင��း
+                    <i class="fas fa-warehouse mr-2"></i>ပစ္စည်းစာရင်း
                 </button>
                 <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 rounded-t-lg hover:bg-gray-100 transition-colors duration-200" data-tab="materialInfo">
                     <i class="fas fa-box-open mr-2"></i>ပစ္စည်းအချက်အလက်
@@ -665,7 +678,7 @@
             <!-- Tab Content: Fault Reports -->
             <div id="faultReports" class="tab-content">
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                    <h2 class="text-xl font-semibold mb-4 text-primary-color">အ���ီရင်ခံစာအသစ်ထည့်သွင်းရန်</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">အစီရင်ခံစာအသစ်ထည့်သွင်းရန်</h2>
                     <form id="reportForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Form fields for Fault Report -->
                         <div>
@@ -861,7 +874,7 @@
                         </div>
                         <div class="mt-4 flex justify-between">
                             <button id="resetFiltersBtn" class="btn-danger py-2 px-4 rounded-md">
-                                <i class="fas fa-times mr-2"></i>စစ်ထုတ်မှုမျ���း ဖျက်မည်
+                                <i class="fas fa-times mr-2"></i>စစ်ထုတ်မှုမျ���း ဖ���က်မည်
                             </button>
                             <div class="text-sm text-gray-500">
                                 Showing <span id="filteredCount">0</span> of <span id="totalCount">0</span> items
@@ -929,14 +942,14 @@
                         </div>
                         <div class="md:col-span-2 flex justify-end mt-4">
                             <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
-                                <i class="fas fa-plus-circle mr-2"></i>ပစ္စည်းအချ��်အလက်ထည့်မည်
+                                <i class="fas fa-plus-circle mr-2"></i>ပစ္စည်းအချက်အလက်ထည့်မည်
                             </button>
                         </div>
                     </form>
                 </div>
 
                 <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိပစ္စည်းအချက်အလက်များ</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိပစ္စ��်းအချက်အလက်များ</h2>
                     <div class="overflow-x-auto">
                         <table id="materialInfoTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
                             <thead>
@@ -1001,7 +1014,7 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိဝန်ဆောင်မှုအချက်အ��က်များ</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိဝန်ဆောင်မှုအချက်အလက်��ျား</h2>
                     <div class="overflow-x-auto">
                         <table id="serviceInfoTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
                             <thead>
