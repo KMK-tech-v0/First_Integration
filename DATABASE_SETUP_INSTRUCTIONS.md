@@ -126,7 +126,7 @@ connection_string = (
 
 ### For .NET Core (using SqlConnection):
 ```csharp
-string connectionString = "Server=localhost;Database=api;User Id=kmk_sql;Password=kmk@161998;TrustServerCertificate=true;";
+string connectionString = "Server=DESKTOP-17P73P0\\SQLEXPRESS;Database=api;User Id=kmk_sql;Password=kmk@161998;TrustServerCertificate=true;";
 ```
 
 ## 📁 File Structure
