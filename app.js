@@ -139,6 +139,12 @@ document.getElementById('authForm').addEventListener('submit', async (event) => 
     const username = usernameInput.value;
     const password = passwordInput.value;
 
+    // Basic validation
+    if (!username || !password) {
+        showAuthMessage('Please enter both username and password.', 'error');
+        return;
+    }
+
     authSubmitBtn.disabled = true;
     authSubmitBtn.textContent = 'Processing...';
 
@@ -170,12 +176,51 @@ document.getElementById('authForm').addEventListener('submit', async (event) => 
         }
     } catch (error) {
         console.error('Authentication error:', error);
-        showAuthMessage('Network error or server unreachable.', 'error');
+
+        // Handle network errors (no backend server)
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            handleOfflineAuth(username, password, endpoint, authTitle);
+        } else {
+            showAuthMessage('Network error or server unreachable.', 'error');
+        }
     } finally {
         authSubmitBtn.disabled = false;
         authSubmitBtn.textContent = authTitle.textContent === 'Login' ? 'Login' : 'Register';
     }
 });
+
+// Handle authentication when backend is not available (demo mode)
+function handleOfflineAuth(username, password, endpoint, authTitle) {
+    if (endpoint === '/login') {
+        // Demo login - accept any username/password
+        if (username.length >= 3 && password.length >= 3) {
+            // Generate a mock JWT token
+            const mockToken = btoa(JSON.stringify({
+                username: username,
+                role: username === 'admin' ? 'admin' : 'user',
+                exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+            }));
+
+            localStorage.setItem('access_token', mockToken);
+            localStorage.setItem('demo_mode', 'true');
+            localStorage.setItem('demo_username', username);
+
+            showAuthMessage('Demo Login Successful! (Backend not connected)', 'success');
+            checkAuth();
+        } else {
+            showAuthMessage('Username and password must be at least 3 characters long.', 'error');
+        }
+    } else {
+        // Demo registration
+        if (username.length >= 3 && password.length >= 6) {
+            showAuthMessage('Demo Registration Successful! Please log in. (Backend not connected)', 'success');
+            authTitle.textContent = 'Login';
+            document.getElementById('toggleAuthMode').textContent = 'Register here';
+        } else {
+            showAuthMessage('Username must be 3+ chars, password must be 6+ chars.', 'error');
+        }
+    }
+}
 
 // Handle logout
 document.getElementById('logoutBtn').addEventListener('click', () => {
