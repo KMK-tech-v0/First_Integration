@@ -1,0 +1,14 @@
+{
+  "name": "python-utilities",
+  "version": "1.0.0",
+  "description": "Python utility scripts collection",
+  "main": "index.js",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "install": "echo 'Python project - no npm dependencies to install'"
+  },
+  "keywords": ["python", "utilities", "scripts"],
+  "author": "",
+  "license": "ISC"
+}

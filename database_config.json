@@ -1,0 +1,132 @@
+{
+  "database": {
+    "connection": {
+      "server": "DESKTOP-17P73P0\\SQLEXPRESS",
+      "database": "api",
+      "user": "kmk_sql",
+      "password": "kmk@161998",
+      "options": {
+        "encrypt": false,
+        "trustServerCertificate": true,
+        "enableArithAbort": true,
+        "connectionTimeout": 30000,
+        "requestTimeout": 30000,
+        "pool": {
+          "max": 10,
+          "min": 0,
+          "idleTimeoutMillis": 30000
+        }
+      }
+    },
+    "connection_string": "Server=DESKTOP-17P73P0\\SQLEXPRESS;Database=api;User Id=kmk_sql;Password=kmk@161998;TrustServerCertificate=true;",
+    "provider": "mssql"
+  },
+  "api_endpoints": {
+    "base_url": "http://localhost:5000",
+    "routes": {
+      "auth": {
+        "login": "/login",
+        "register": "/register",
+        "logout": "/logout",
+        "protected": "/protected"
+      },
+      "reports": {
+        "list": "/api/reports",
+        "create": "/api/reports",
+        "get_by_id": "/api/reports/:id",
+        "get_by_trans_num": "/api/reports/:trans_num",
+        "update": "/api/reports/:trans_num",
+        "delete": "/api/reports/:trans_num",
+        "export_excel": "/api/reports/:trans_num/export/excel",
+        "export_pdf": "/api/reports/:trans_num/export/pdf"
+      },
+      "materials": {
+        "info_list": "/api/materials_info",
+        "info_create": "/api/materials_info",
+        "info_update": "/api/materials_info/:id",
+        "info_delete": "/api/materials_info/:id",
+        "inventory_list": "/api/inventory/materials",
+        "inventory_add_transaction": "/api/inventory/materials/transaction",
+        "inventory_report": "/api/inventory/report/excel"
+      },
+      "services": {
+        "info_list": "/api/services_info",
+        "info_create": "/api/services_info",
+        "info_update": "/api/services_info/:id",
+        "info_delete": "/api/services_info/:id"
+      },
+      "users": {
+        "list": "/api/users",
+        "create": "/api/users",
+        "update": "/api/users/:id",
+        "delete": "/api/users/:id"
+      },
+      "uploads": {
+        "photos": "/api/uploads/photos",
+        "static": "/uploads/:filename"
+      }
+    }
+  },
+  "table_mappings": {
+    "users": {
+      "table": "users",
+      "primary_key": "id",
+      "fields": ["id", "username", "password_hash", "role", "email", "full_name", "is_active", "created_at", "updated_at", "last_login"]
+    },
+    "fault_reports": {
+      "table": "fault_reports",
+      "primary_key": "id",
+      "unique_key": "trans_num",
+      "fields": ["id", "trans_num", "project_name", "fault_name", "circuit_id", "customer_name", "customer_address", "pic", "region", "township", "location_lat", "location_long", "m_latitude", "m_longitude", "raised_time", "cleared_time", "duration", "root_cause", "status", "priority", "created_at", "updated_at", "created_by", "updated_by"]
+    },
+    "materials_info": {
+      "table": "materials_info",
+      "primary_key": "id",
+      "unique_key": "material_code",
+      "fields": ["id", "material_code", "material_name", "material_type", "uom", "unit_price", "kcn_price", "sgg_price", "description", "is_active", "created_at", "updated_at", "created_by", "updated_by"]
+    },
+    "services_info": {
+      "table": "services_info",
+      "primary_key": "id",
+      "unique_key": "service_code",
+      "fields": ["id", "service_code", "service_name", "service_type", "uom", "unit_price", "kcn_price", "sgg_price", "description", "is_active", "created_at", "updated_at", "created_by", "updated_by"]
+    },
+    "material_inventory": {
+      "table": "material_inventory",
+      "primary_key": "id",
+      "fields": ["id", "material_code", "transaction_type", "transaction_ref", "quantity", "unit_cost", "total_value", "transaction_date", "notes", "created_by", "created_at"]
+    },
+    "report_photos": {
+      "table": "report_photos",
+      "primary_key": "id",
+      "fields": ["id", "report_id", "original_name", "unique_name", "file_path", "file_size", "content_type", "label", "uploaded_at", "uploaded_by"]
+    },
+    "report_materials": {
+      "table": "report_materials",
+      "primary_key": "id",
+      "fields": ["id", "report_id", "material_code", "material_name", "material_type", "uom", "material_usage", "unit_cost", "total_cost", "notes", "created_at"]
+    },
+    "report_services": {
+      "table": "report_services",
+      "primary_key": "id",
+      "fields": ["id", "report_id", "service_code", "service_name", "service_type", "uom", "service_usage", "unit_cost", "total_cost", "notes", "created_at"]
+    }
+  },
+  "file_storage": {
+    "upload_path": "./uploads",
+    "max_file_size": "10MB",
+    "allowed_types": ["image/jpeg", "image/png", "image/gif", "image/webp"],
+    "photo_quality": 85,
+    "thumbnail_size": "200x200"
+  },
+  "security": {
+    "jwt_secret": "your_jwt_secret_here_change_in_production",
+    "jwt_expiry": "24h",
+    "bcrypt_rounds": 12,
+    "cors_origins": ["http://localhost:3000", "http://localhost:8000"],
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 100
+    }
+  }
+}
