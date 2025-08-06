@@ -253,7 +253,7 @@ document.getElementById('authForm').addEventListener('submit', async (event) => 
     const endpoint = authTitle.textContent === 'Login' ? '/login' : '/register';
 
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        const response = await safeFetch(`${API_BASE_URL}${endpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -760,7 +760,7 @@ async function fetchServiceInfoForDropdown() {
     } catch (error) {
         console.error("Error fetching service info for dropdown:", error);
         if (error.message !== 'Unauthorized') {
-            showMessage("ဝန်ဆောင်မှုအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်သည်", "error");
+            showMessage("ဝန်ဆောင်မ��ုအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်သည်", "error");
         }
     }
 }
