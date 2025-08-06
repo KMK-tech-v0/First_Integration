@@ -155,6 +155,10 @@ function resetToLoginState(authContainer, appContent, navLinksAfterLogin) {
     authContainer.classList.remove('hidden');
     appContent.classList.add('hidden');
     document.body.style.paddingTop = '0'; // Reset padding
+
+    // Hide demo banner
+    document.getElementById('demoBanner').classList.add('hidden');
+
     // Disable navigation links if not logged in
     navLinksAfterLogin.forEach(link => {
         link.classList.add('disabled-link');
