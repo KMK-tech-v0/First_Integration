@@ -152,7 +152,7 @@ async function checkAuth() {
 
         try {
             // Attempt to access a protected route to validate the token
-            const response = await fetch(`${API_BASE_URL}/protected`, {
+            const response = await safeFetch(`${API_BASE_URL}/protected`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -760,7 +760,7 @@ async function fetchServiceInfoForDropdown() {
     } catch (error) {
         console.error("Error fetching service info for dropdown:", error);
         if (error.message !== 'Unauthorized') {
-            showMessage("ဝန်ဆောင်မ��ုအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်သည်", "error");
+            showMessage("ဝန်ဆောင်မှုအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်သည်", "error");
         }
     }
 }
