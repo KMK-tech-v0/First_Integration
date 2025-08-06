@@ -279,12 +279,13 @@ document.getElementById('authForm').addEventListener('submit', async (event) => 
     } catch (error) {
         console.error('Authentication error:', error);
 
-        // Handle network errors (no backend server) - improved error detection
-        if (error.name === 'TypeError' &&
-            (error.message.includes('fetch') ||
-             error.message.includes('Failed to fetch') ||
-             error.message.includes('NetworkError') ||
-             error.message.includes('network'))) {
+        // Handle network errors (no backend server)
+        if (error.name === 'NetworkError' ||
+            (error.name === 'TypeError' &&
+             (error.message.includes('fetch') ||
+              error.message.includes('Failed to fetch') ||
+              error.message.includes('NetworkError') ||
+              error.message.includes('network')))) {
             handleOfflineAuth(username, password, endpoint, authTitle);
         } else {
             showAuthMessage('Network error or server unreachable.', 'error');
