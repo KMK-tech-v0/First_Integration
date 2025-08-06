@@ -926,8 +926,9 @@ for render_type in render_types:
             issue_percent = (issue_counts / num_sites * 100).round(2)
             summary = pd.DataFrame({'Count': issue_counts, 'Percentage': issue_percent})
             # Generate HTML for site IDs within details/summary tags for expandability.
+            newline_char = '\n'  # Define backslash outside f-string
             summary['Site IDs'] = summary.index.map(
-                lambda x: f"<details><summary>Show Site IDs</summary><div style='white-space: normal;'>{textwrap.fill(', '.join(map(str, sub_sites.loc[sub_sites['Issue Identity'] == x, 'Site ID'].tolist())), 100).replace('\\n', '<br>')}</div></details>"
+                lambda x: f"<details><summary>Show Site IDs</summary><div style='white-space: normal;'>{textwrap.fill(', '.join(map(str, sub_sites.loc[sub_sites['Issue Identity'] == x, 'Site ID'].tolist())), 100).replace(newline_char, '<br>')}</div></details>"
             )
             html_parts.append(f"<h3>Sub Office: {sub_office}</h3>{summary.to_html(escape=False)}")
 
