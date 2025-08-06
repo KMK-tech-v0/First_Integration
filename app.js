@@ -255,7 +255,7 @@ function handleOfflineAuth(username, password, endpoint, authTitle) {
 
 // Handle logout
 document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('access_token');
+    clearAuthData();
     showAuthMessage('Logged out successfully.', 'info');
     checkAuth(); // Re-check auth to show login form
 });
