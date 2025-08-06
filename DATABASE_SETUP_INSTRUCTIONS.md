@@ -93,7 +93,7 @@ Authentication: SQL Server Authentication
 
 ### Connection String:
 ```
-Server=localhost;Database=api;User Id=kmk_sql;Password=kmk@161998;TrustServerCertificate=true;
+Server=DESKTOP-17P73P0\SQLEXPRESS;Database=api;User Id=kmk_sql;Password=kmk@161998;TrustServerCertificate=true;
 ```
 
 ### For Node.js (using mssql package):
