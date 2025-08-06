@@ -404,19 +404,92 @@
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
         }
 
-        /* Modern navigation for login page */
-        .login-nav {
-            background: rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        /* Modern navigation blocks styling */
+        .modern-nav-container {
+            position: sticky;
+            top: 64px;
+            z-index: 90;
+            transition: all 0.3s ease;
+        }
+
+        .nav-block {
             position: relative;
-            z-index: 4;
-            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .nav-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-block:hover::before {
+            left: 100%;
+        }
+
+        .coming-soon-block {
+            position: relative;
+        }
+
+        .coming-soon-block::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            pointer-events: none;
+        }
+
+        /* Coming Soon Modal Styles */
+        .coming-soon-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .coming-soon-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .coming-soon-content {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .coming-soon-modal.show .coming-soon-content {
+            transform: scale(1);
         }
 
         .login-nav ul {
