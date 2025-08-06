@@ -100,15 +100,15 @@ def test_html_basic_structure():
     """Test that index.html has basic HTML structure."""
     if not os.path.exists("index.html"):
         pytest.skip("index.html not found")
-    
+
     with open("index.html", "r", encoding="utf-8") as f:
         content = f.read()
-    
+
     # Basic HTML structure checks
     assert "<!DOCTYPE html>" in content or "<!doctype html>" in content.lower(), "HTML should have DOCTYPE declaration"
     assert "<html" in content.lower(), "HTML should have html tag"
     assert "<head>" in content.lower(), "HTML should have head section"
-    assert "<body>" in content.lower(), "HTML should have body section"
+    assert "<body" in content.lower(), "HTML should have body section"
 
 
 if __name__ == "__main__":
