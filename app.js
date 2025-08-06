@@ -2,6 +2,32 @@
 const API_BASE_URL = 'http://localhost:5000'; // Ensure this matches your Flask app's port
 // SQL Server Instance: DESKTOP-17P73P0\SQLEXPRESS
 
+// Global error handler for unhandled promise rejections
+window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+
+    // Check if it's a fetch-related error
+    if (event.reason && event.reason.name === 'TypeError' &&
+        (event.reason.message.includes('fetch') ||
+         event.reason.message.includes('Failed to fetch') ||
+         event.reason.message.includes('NetworkError'))) {
+
+        console.log('Network error detected globally, ensuring demo mode is enabled');
+
+        // Prevent the default error handling
+        event.preventDefault();
+
+        // Enable demo mode if not already enabled
+        if (!localStorage.getItem('demo_mode')) {
+            localStorage.setItem('demo_mode', 'true');
+            localStorage.setItem('demo_username', 'demo_user');
+
+            // Show a user-friendly message
+            showAuthMessage('Backend server not available. Running in demo mode.', 'warning');
+        }
+    }
+});
+
 // Global variables for material and service info, fetched once
 let allMaterialInfo = [];
 let allServiceInfo = [];
@@ -679,7 +705,7 @@ async function fetchMaterialInfoForDropdown() {
     } catch (error) {
         console.error("Error fetching material info for dropdown:", error);
         if (error.message !== 'Unauthorized') {
-            showMessage("ပစ္စည်းအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်���ည်", "error");
+            showMessage("ပစ္စည်းအချက်အလက်များ ရယူရာတွ��် အမှားဖြစ်���ည်", "error");
         }
     }
 }
