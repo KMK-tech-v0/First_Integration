@@ -1,7 +1,7 @@
 {
   "database": {
     "connection": {
-      "server": "localhost",
+      "server": "DESKTOP-17P73P0\\SQLEXPRESS",
       "database": "api",
       "user": "kmk_sql",
       "password": "kmk@161998",
