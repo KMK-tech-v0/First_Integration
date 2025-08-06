@@ -1,5 +1,6 @@
 // Base URL for your Flask API
 const API_BASE_URL = 'http://localhost:5000'; // Ensure this matches your Flask app's port
+// SQL Server Instance: DESKTOP-17P73P0\SQLEXPRESS
 
 // Global variables for material and service info, fetched once
 let allMaterialInfo = [];
