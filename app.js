@@ -697,30 +697,79 @@ async function fetchServiceInfoForDropdown() {
     }
 }
 
-// --- Dummy Functions (since backend doesn't exist) ---
+// --- Demo Functions (backend simulation) ---
 async function fetchAllReports() {
     const reportsTableBody = document.getElementById('reportsTableBody');
-    reportsTableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4">Backend server not yet implemented. This is a frontend demo.</td></tr>';
+    reportsTableBody.innerHTML = `
+        <tr><td colspan="9" class="text-center py-8">
+            <div class="flex flex-col items-center">
+                <i class="fas fa-server text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">Demo Mode - No Backend Connected</h3>
+                <p class="text-gray-500 mb-4">This is a frontend demonstration. To see real data:</p>
+                <div class="text-sm text-gray-400">
+                    <p>1. Set up SQL Server database using provided scripts</p>
+                    <p>2. Implement backend API server</p>
+                    <p>3. Connect frontend to your API endpoint</p>
+                </div>
+            </div>
+        </td></tr>
+    `;
 }
 
 async function fetchMaterialInventory() {
     const materialInventoryTableBody = document.getElementById('materialInventoryTableBody');
-    materialInventoryTableBody.innerHTML = '<tr><td colspan="12" class="text-center py-4">Backend server not yet implemented. This is a frontend demo.</td></tr>';
+    materialInventoryTableBody.innerHTML = `
+        <tr><td colspan="12" class="text-center py-8">
+            <div class="flex flex-col items-center">
+                <i class="fas fa-warehouse text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">Demo Mode - Material Inventory</h3>
+                <p class="text-gray-500 mb-2">Backend API required for real inventory data</p>
+                <p class="text-sm text-gray-400">Database schema and sample data available in SQL scripts</p>
+            </div>
+        </td></tr>
+    `;
 }
 
 async function fetchMaterialInfo() {
     const materialInfoTableBody = document.getElementById('materialInfoTableBody');
-    materialInfoTableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4">Backend server not yet implemented. This is a frontend demo.</td></tr>';
+    materialInfoTableBody.innerHTML = `
+        <tr><td colspan="8" class="text-center py-8">
+            <div class="flex flex-col items-center">
+                <i class="fas fa-box-open text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">Demo Mode - Material Information</h3>
+                <p class="text-gray-500 mb-2">Sample materials available in database setup</p>
+                <p class="text-sm text-gray-400">Includes fiber cables, connectors, and equipment</p>
+            </div>
+        </td></tr>
+    `;
 }
 
 async function fetchServiceInfo() {
     const serviceInfoTableBody = document.getElementById('serviceInfoTableBody');
-    serviceInfoTableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4">Backend server not yet implemented. This is a frontend demo.</td></tr>';
+    serviceInfoTableBody.innerHTML = `
+        <tr><td colspan="8" class="text-center py-8">
+            <div class="flex flex-col items-center">
+                <i class="fas fa-tools text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">Demo Mode - Service Information</h3>
+                <p class="text-gray-500 mb-2">Sample services available in database setup</p>
+                <p class="text-sm text-gray-400">Includes installation, testing, and maintenance services</p>
+            </div>
+        </td></tr>
+    `;
 }
 
 async function fetchUsers() {
     const usersTableBody = document.getElementById('usersTableBody');
-    usersTableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Backend server not yet implemented. This is a frontend demo.</td></tr>';
+    usersTableBody.innerHTML = `
+        <tr><td colspan="4" class="text-center py-8">
+            <div class="flex flex-col items-center">
+                <i class="fas fa-users-cog text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">Demo Mode - User Management</h3>
+                <p class="text-gray-500 mb-2">Backend API required for user management</p>
+                <p class="text-sm text-gray-400">Database includes admin user and role-based access</p>
+            </div>
+        </td></tr>
+    `;
 }
 
 // --- Initialize the Application ---
