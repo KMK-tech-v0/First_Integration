@@ -862,20 +862,23 @@ document.addEventListener('DOMContentLoaded', () => {
 // Mock form submission to show functionality
 document.getElementById('reportForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    showMessage('Form submitted successfully! (This is a demo - backend not implemented)');
+    showMessage('✅ Fault report would be saved to database (Demo Mode - Connect backend to enable)', 'success');
 });
 
 document.getElementById('materialInfoForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    showMessage('Material info saved successfully! (This is a demo - backend not implemented)');
+    showMessage('✅ Material information would be saved to database (Demo Mode - Connect backend to enable)', 'success');
+    e.target.reset();
 });
 
 document.getElementById('serviceInfoForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    showMessage('Service info saved successfully! (This is a demo - backend not implemented)');
+    showMessage('✅ Service information would be saved to database (Demo Mode - Connect backend to enable)', 'success');
+    e.target.reset();
 });
 
 document.getElementById('userForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    showMessage('User saved successfully! (This is a demo - backend not implemented)');
+    showMessage('✅ User account would be created/updated (Demo Mode - Connect backend to enable)', 'success');
+    e.target.reset();
 });
