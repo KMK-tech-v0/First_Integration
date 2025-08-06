@@ -165,7 +165,8 @@ async function checkAuth() {
                 appContent.classList.remove('hidden');
                 // Adjust body padding for fixed header when appContent is visible
                 document.body.style.paddingTop = '108px';
-                // If already logged in, fetch initial data
+                // If already logged in, fetch initial data and initialize navigation
+                initModernNavigation();
                 document.querySelector('.tab-button[data-tab="faultReports"]').click();
 
                 // Enable navigation links after login
