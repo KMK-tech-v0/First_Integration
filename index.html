@@ -636,38 +636,42 @@
         }
 
         @media (max-width: 768px) {
-            .login-nav ul {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 0 1rem;
+            .modern-nav-container .grid {
+                grid-template-columns: 1fr;
             }
-            .login-nav li {
-                width: 100%;
-                margin: 0.5rem 0;
+            .nav-block {
+                margin-bottom: 1rem;
             }
-            .login-nav a, .login-nav .nav-dropdown-toggle {
-                width: 100%;
-                justify-content: space-between;
+            .company-branding {
+                margin-bottom: 2rem;
             }
-            .login-nav .dropdown-menu {
-                position: static; /* Allow dropdown to flow in document */
-                transform: none;
-                width: 100%;
-                box-shadow: none;
-                background-color: rgba(0, 0, 0, 0.6);
-                padding-left: 1rem;
+            .company-logo {
+                width: 100px;
+                height: 100px;
             }
-            .company-info {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            .company-info img {
-                max-height: 50px;
-            }
-            .company-info h1 {
+            .company-title {
                 font-size: 1.5rem;
             }
+        }
+
+        /* Coming Soon Modal Animation */
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0, -10px, 0);
+            }
+            70% {
+                transform: translate3d(0, -5px, 0);
+            }
+            90% {
+                transform: translate3d(0, -2px, 0);
+            }
+        }
+
+        .bounce-animation {
+            animation: bounce 2s ease infinite;
         }
 
     </style>
@@ -995,7 +999,7 @@
 
                         <div class="md:col-span-2 flex justify-end mt-6">
                             <button type="submit" class="btn-primary py-2 px-6 rounded-md text-lg">
-                                <i class="fas fa-save mr-2"></i>အစီရင်ခံစာတင်သွင်းမည်
+                                <i class="fas fa-save mr-2"></i>အစ��ရင်ခံစာတင်သွင်းမည်
                             </button>
                         </div>
                     </form>
@@ -1165,7 +1169,7 @@
             <!-- Tab Content: Service Info -->
             <div id="serviceInfo" class="tab-content hidden">
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                    <h2 class="text-xl font-semibold mb-4 text-primary-color">ဝန်ဆောင်မှုအချက်အလက်အသစ်ထည့်သွင်းရန်</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">ဝန်ဆောင်မှုအချ���်အလက်အသစ်ထည့်သွင်းရန်</h2>
                     <form id="serviceInfoForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="newServiceCode" class="block text-sm font-medium text-gray-700">Service Code <span class="text-danger-color">*</span></label>
