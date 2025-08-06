@@ -846,6 +846,10 @@ async function fetchUsers() {
 
 // --- Initialize the Application ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Clear any existing demo mode on page load to ensure clean start
+    localStorage.removeItem('demo_mode');
+    localStorage.removeItem('demo_username');
+
     checkAuth(); // Check authentication status on page load
 
     // Initialize map for the add form
