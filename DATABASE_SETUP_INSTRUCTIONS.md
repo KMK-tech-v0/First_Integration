@@ -116,7 +116,7 @@ import pyodbc
 
 connection_string = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
-    "SERVER=localhost;"
+    "SERVER=DESKTOP-17P73P0\\SQLEXPRESS;"
     "DATABASE=api;"
     "UID=kmk_sql;"
     "PWD=kmk@161998;"
