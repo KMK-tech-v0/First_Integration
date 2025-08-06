@@ -145,7 +145,8 @@ async function checkAuth() {
                 }
             });
 
-            // Show the first tab
+            // Initialize modern navigation and show the first tab
+            initModernNavigation();
             document.querySelector('.tab-button[data-tab="faultReports"]').click();
             return;
         }
