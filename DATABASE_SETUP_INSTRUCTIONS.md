@@ -48,7 +48,7 @@ This guide will help you set up the SQL Server database for the MMP Fiber Fault 
 
 ### Step 4: Database Connection Details
 ```
-Server: localhost (or your SQL Server instance)
+Server: DESKTOP-17P73P0\SQLEXPRESS
 Database: api
 Username: kmk_sql
 Password: kmk@161998
