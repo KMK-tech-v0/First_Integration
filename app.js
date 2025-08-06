@@ -42,6 +42,40 @@ let largeMapMarker = null; // Marker for the large map modal
 let currentInventoryData = []; // To store the original inventory data
 let filteredInventoryData = []; // To store filtered data
 
+// Safe fetch wrapper that handles network errors gracefully
+async function safeFetch(url, options = {}) {
+    try {
+        const response = await fetch(url, options);
+        return response;
+    } catch (error) {
+        console.error('Fetch error:', error);
+
+        // Check if it's a network-related error
+        if (error.name === 'TypeError' &&
+            (error.message.includes('fetch') ||
+             error.message.includes('Failed to fetch') ||
+             error.message.includes('NetworkError') ||
+             error.message.includes('network'))) {
+
+            // Enable demo mode if not already enabled
+            if (!localStorage.getItem('demo_mode')) {
+                localStorage.setItem('demo_mode', 'true');
+                localStorage.setItem('demo_username', 'demo_user');
+                console.log('Network error detected, enabling demo mode');
+            }
+
+            // Re-throw with a more specific error
+            const networkError = new Error('Backend server not available');
+            networkError.name = 'NetworkError';
+            networkError.originalError = error;
+            throw networkError;
+        }
+
+        // Re-throw other errors as-is
+        throw error;
+    }
+}
+
 // Utility function to show messages (for general app messages)
 function showMessage(message, type = 'success') {
     const messageBox = document.getElementById('messageBox');
@@ -705,7 +739,7 @@ async function fetchMaterialInfoForDropdown() {
     } catch (error) {
         console.error("Error fetching material info for dropdown:", error);
         if (error.message !== 'Unauthorized') {
-            showMessage("ပစ္စည်းအချက်အလက်များ ရယူရာတွ��် အမှားဖြစ်���ည်", "error");
+            showMessage("ပစ္စည်းအချက်အလက်များ ရယူရာတွင် အမှားဖြစ်���ည်", "error");
         }
     }
 }
