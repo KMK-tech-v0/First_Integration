@@ -131,6 +131,20 @@
             color: white;
         }
 
+        /* Demo banner styles */
+        .demo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1003; /* Above message box */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-banner + * {
+            margin-top: 60px; /* Add space for banner */
+        }
+
         /* Leaflet map styling */
         #map, #editMap {
             height: 250px; /* Smaller map size */
@@ -949,7 +963,7 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိပစ္စ��်းအချက်အလက်များ</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">လက်ရှိပစ္စည်းအချက်အလက်များ</h2>
                     <div class="overflow-x-auto">
                         <table id="materialInfoTable" class="min-w-full bg-white data-table rounded-lg overflow-hidden">
                             <thead>
@@ -1040,7 +1054,7 @@
             <!-- NEW Tab Content: User Management -->
             <div id="userManagement" class="tab-content hidden">
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                    <h2 class="text-xl font-semibold mb-4 text-primary-color">အသုံးပြုသူအသစ်ထည့်သွင်းရ��် / ပြင်ဆင်ရန်</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-primary-color">အသုံးပြုသူအသစ်ထည့်သွင်းရ��် / ပြင��ဆင်ရန်</h2>
                     <form id="userForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="hidden" id="userId" name="id">
                         <div>
